@@ -1,0 +1,22 @@
+{
+  "name": "ichack2016_linux",
+  "version": "0.1.0",
+  "description": "Screencast from Linux",
+  "main": "server.js",
+  "scripts": {
+    "start": "node_modules/.bin/nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "binaryjs": "0.2.1",
+    "dotenv": "2.0.0",
+    "express": "4.13.4",
+    "lodash": "4.5.0",
+    "use-strict": "1.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "1.9.0"
+  }
+}
