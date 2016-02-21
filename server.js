@@ -28,6 +28,29 @@ app.get('/', function (req, res) {
   grab.stdout.pipe(res)
 })
 
+if (process.env.VIDEO) {
+  app.get('/video', function (req, res) {
+    var grab = spawn('ffmpeg', [
+      '-f', 'x11grab',
+      '-r', '30',
+      '-s', '1366x768',
+      '-i', ':0.0',
+      '-f', 'matroska',
+      '-c:v', 'libx264',
+      '-tune', 'zerolatency',
+      '-preset', 'ultrafast',
+      '-'
+    ])
+
+    req.on('close', function () {
+      grab.kill()
+    })
+
+    grab.stdout.pipe(res)
+    grab.stderr.pipe(process.stdout)
+  })
+}
+
 var curDesktop = '0'
 
 function changescreenPrivate (id) {
