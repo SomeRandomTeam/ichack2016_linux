@@ -5,6 +5,7 @@ require('dotenv').load()
 var http = require('http')
 var spawn = require('child_process').spawn
 
+var _ = require('lodash')
 var express = require('express')
 
 var app = express()
@@ -25,6 +26,24 @@ app.get('/', function (req, res) {
   ])
 
   grab.stdout.pipe(res)
+})
+
+var curDesktop = '0'
+
+function changescreenPrivate (id) {
+  curDesktop = id
+  spawn('wmctrl', ['-s', id])
+}
+
+var changescreen = _.throttle(changescreenPrivate, 1000)
+
+app.get('/desktop', function (req, res) {
+  res.send(curDesktop).end()
+})
+
+app.get('/switch/:id', function (req, res) {
+  changescreen(req.params.id)
+  res.json({ok: true})
 })
 
 server.listen(9999)
