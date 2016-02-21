@@ -55,7 +55,8 @@ var curDesktop = '0'
 
 function changescreenPrivate (id) {
   curDesktop = id
-  spawn('wmctrl', ['-s', id])
+  // spawn('wmctrl', ['-s', id])
+  spawn('notify-send', ['Switch screen', id])
 }
 
 var changescreen = _.throttle(changescreenPrivate, 1000)
@@ -70,3 +71,29 @@ app.get('/switch/:id', function (req, res) {
 })
 
 server.listen(9999)
+console.log('Listening on tcp...')
+
+var dgram = require('dgram')
+var udpSocket = dgram.createSocket('udp4')
+var udpReply = new Buffer('asdf')
+
+udpSocket.on('error', (err) => {
+  console.log(`udpSocket error:\n${err.stack}`)
+  udpSocket.close()
+})
+
+udpSocket.on('message', (msg, rinfo) => {
+  console.log(`udpSocket got: ${msg} from ${rinfo.address}:${rinfo.port}`)
+  udpSocket.send(udpReply, 0, udpReply.length, rinfo.port, rinfo.address, (err) => {
+    if (err) {
+      console.log(err)
+    }
+  })
+})
+
+udpSocket.on('listening', () => {
+  var address = udpSocket.address()
+  console.log(`udpSocket listening ${address.address}:${address.port}`)
+})
+
+udpSocket.bind(9997)
